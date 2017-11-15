@@ -1,6 +1,6 @@
 
 
-var scene,camera,renderer,cube,plane,spotLight,axisHelper,player;
+var scene,camera,renderer,cube,plane,directionalLight,axisHelper,player;
 
 function initScene(){
 	scene = new THREE.Scene();
@@ -12,14 +12,17 @@ function initScene(){
 	renderer = new THREE.WebGLRenderer();
 	renderer.setSize( window.innerWidth-4, window.innerHeight-4 );
 	renderer.shadowMap.enabled = true;
+	renderer.shadowMap.type = THREE.PCFShadowMap;
+
 	document.body.appendChild( renderer.domElement );
 
 	var cubeGeometry = new THREE.BoxGeometry( 1, 1, 1 );
 	var cubeMaterial = new THREE.MeshLambertMaterial( { color: 0x0000ff } );
 	cube = new THREE.Mesh( cubeGeometry, cubeMaterial );
 	cube.castShadow = true;
+  cube.position.z=3.0;
+  cube.position.y=3.0;
   cube.position.z=5.0;
-  cube.position.y=5.0;
 
 	scene.add( cube );
 
@@ -31,6 +34,7 @@ function initScene(){
   player = new THREE.Mesh(playerGeometry,playerMaterial);
   player.position.y=1.0;
   player.castShadow=true;
+  player.receiveShadow = true; 
   scene.add(player);
 
 	var planeGeometry = new THREE.PlaneGeometry(50, 50, 1, 1);
@@ -46,10 +50,19 @@ function initScene(){
   camera.lookAt( player.position );
 	
 	
-	spotLight = new THREE.SpotLight( 0xffffff );
-	spotLight.position.set( -20, 20, 20 );
-	spotLight.castShadow = true;
-	scene.add( spotLight ); 
+	directionalLight = new THREE.DirectionalLight( 0xffffff, 1 );
+	directionalLight.position.set( -20, 40, 20 );
+	directionalLight.castShadow = true;
+	directionalLight.shadow.mapSize.width = 2048;  
+	directionalLight.shadow.mapSize.height = 2048;  
+	directionalLight.shadow.camera.left=-35;
+	directionalLight.shadow.camera.bottom=-30;
+	directionalLight.shadow.camera.right=35;
+	directionalLight.shadow.camera.top=30;
+	directionalLight.shadow.camera.lookAt( player.position );
+	scene.add( directionalLight ); 
+	/*var helper = new THREE.CameraHelper( directionalLight.shadow.camera );
+	scene.add( helper ); */
 }
 
 initScene();
