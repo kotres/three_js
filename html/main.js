@@ -1,6 +1,6 @@
 
 
-var scene,camera,renderer,cube,plane,spotLight,axisHelper;
+var scene,camera,renderer,cube,plane,spotLight,axisHelper,player;
 
 function initScene(){
 	scene = new THREE.Scene();
@@ -10,7 +10,7 @@ function initScene(){
                                           20 / 2, 20 / - 2,
                                           0.1, 1000 );
 	renderer = new THREE.WebGLRenderer();
-	renderer.setSize( window.innerWidth, window.innerHeight );
+	renderer.setSize( window.innerWidth-4, window.innerHeight-4 );
 	renderer.shadowMap.enabled = true;
 	document.body.appendChild( renderer.domElement );
 
@@ -26,17 +26,24 @@ function initScene(){
   axisHelper=new THREE.AxesHelper();
   scene.add(axisHelper);
 
+  var playerGeometry= new THREE.BoxGeometry(0.5,2,0.5);
+  var playerMaterial= new THREE.MeshLambertMaterial({color: 0x00ff00});
+  player = new THREE.Mesh(playerGeometry,playerMaterial);
+  player.position.y=1.0;
+  player.castShadow=true;
+  scene.add(player);
+
 	var planeGeometry = new THREE.PlaneGeometry(50, 50, 1, 1);
 	var planeMaterial = new THREE.MeshLambertMaterial( { color: 0xff0000 } );
-	plane = new THREE.Mesh( planeGeometry, planeMaterial );
+  plane = new THREE.Mesh( planeGeometry, planeMaterial );
 
-	plane.rotation.x = -0.4 * Math.PI;
-    plane.position.z = 0;
+	plane.rotation.x = -0.5 * Math.PI;
+  plane.position.z = 0;
 	plane.receiveShadow = true; 
 	scene.add( plane );
 
-  camera.position.set( 20, 20, 20 );
-  camera.lookAt( 0,0,0 );
+  camera.position.set( player.position.x+20, player.position.y+20, player.position.z+20 );
+  camera.lookAt( player.position );
 	
 	
 	spotLight = new THREE.SpotLight( 0xffffff );
@@ -60,20 +67,24 @@ document.addEventListener('keydown', function(event) {
     var cameraSpeed=0.5;
     switch (event.key) {
         case "ArrowDown":
-          camera.position.z+=cameraSpeed;
-          camera.position.x+=cameraSpeed;
+          player.position.z+=cameraSpeed;
+          player.position.x+=cameraSpeed;
+          camera.position.set(player.position.x+20,player.position.y+20,player.position.z+20);
           break;
         case "ArrowUp":
-          camera.position.z-=cameraSpeed;
-          camera.position.x-=cameraSpeed;
+          player.position.z-=cameraSpeed;
+          player.position.x-=cameraSpeed;
+          camera.position.set(player.position.x+20,player.position.y+20,player.position.z+20);
           break;
         case "ArrowLeft":
-          camera.position.z+=cameraSpeed;
-          camera.position.x-=cameraSpeed;
+          player.position.z+=cameraSpeed;
+          player.position.x-=cameraSpeed;
+          camera.position.set(player.position.x+20,player.position.y+20,player.position.z+20);
           break;
         case "ArrowRight":
-          camera.position.z-=cameraSpeed;
-          camera.position.x+=cameraSpeed;
+          player.position.z-=cameraSpeed;
+          player.position.x+=cameraSpeed;
+          camera.position.set(player.position.x+20,player.position.y+20,player.position.z+20);
           break;
         default:
           return;
