@@ -4,8 +4,11 @@ var scene,camera,renderer,cube,plane,spotLight;
 
 function initScene(){
 	scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-
+    //camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+    var screenRatio=window.innerWidth /window.innerHeight;
+    camera = new THREE.OrthographicCamera( 20*screenRatio/ - 2, 20*screenRatio/ 2,
+                                          20 / 2, 20 / - 2,
+                                          0.1, 1000 );
 	renderer = new THREE.WebGLRenderer();
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	renderer.shadowMap.enabled = true;
@@ -15,6 +18,7 @@ function initScene(){
 	var cubeMaterial = new THREE.MeshLambertMaterial( { color: 0x0000ff } );
 	cube = new THREE.Mesh( cubeGeometry, cubeMaterial );
 	cube.castShadow = true;
+    cube.position.z=5.0;
 	scene.add( cube );
 
 
@@ -23,12 +27,12 @@ function initScene(){
 	plane = new THREE.Mesh( planeGeometry, planeMaterial );
 
 	plane.rotation.x = -0.4 * Math.PI;
-	plane.position.z = -5;
+    plane.position.z = 0;
 	plane.receiveShadow = true; 
 	scene.add( plane );
 
-    camera.position.z = 5;
-    camera.position.y = 5;
+   // camera.position.z = 10;
+    camera.position.y = 10;
     camera.rotation.x = -Math.PI/4;
 	
 	
@@ -48,5 +52,25 @@ var animate = function () {
 
 	renderer.render(scene, camera);
 };
+
+document.addEventListener('keydown', function(event) {
+    var cameraSpeed=0.5;
+    switch (event.key) {
+        case "ArrowDown":
+          camera.position.z+=cameraSpeed;
+          break;
+        case "ArrowUp":
+          camera.position.z-=cameraSpeed;
+          break;
+        case "ArrowLeft":
+          camera.position.x-=cameraSpeed;
+          break;
+        case "ArrowRight":
+          camera.position.x+=cameraSpeed;
+          break;
+        default:
+          return;
+      }
+});
 
 animate();
