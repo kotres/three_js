@@ -1,6 +1,6 @@
 
 
-var scene,camera,renderer,cube,plane,spotLight;
+var scene,camera,renderer,cube,plane,spotLight,axisHelper;
 
 function initScene(){
 	scene = new THREE.Scene();
@@ -18,9 +18,13 @@ function initScene(){
 	var cubeMaterial = new THREE.MeshLambertMaterial( { color: 0x0000ff } );
 	cube = new THREE.Mesh( cubeGeometry, cubeMaterial );
 	cube.castShadow = true;
-    cube.position.z=5.0;
+  cube.position.z=5.0;
+  cube.position.y=5.0;
+
 	scene.add( cube );
 
+  axisHelper=new THREE.AxesHelper();
+  scene.add(axisHelper);
 
 	var planeGeometry = new THREE.PlaneGeometry(50, 50, 1, 1);
 	var planeMaterial = new THREE.MeshLambertMaterial( { color: 0xff0000 } );
@@ -31,9 +35,8 @@ function initScene(){
 	plane.receiveShadow = true; 
 	scene.add( plane );
 
-   // camera.position.z = 10;
-    camera.position.y = 10;
-    camera.rotation.x = -Math.PI/4;
+  camera.position.set( 20, 20, 20 );
+  camera.lookAt( 0,0,0 );
 	
 	
 	spotLight = new THREE.SpotLight( 0xffffff );
@@ -58,14 +61,18 @@ document.addEventListener('keydown', function(event) {
     switch (event.key) {
         case "ArrowDown":
           camera.position.z+=cameraSpeed;
+          camera.position.x+=cameraSpeed;
           break;
         case "ArrowUp":
           camera.position.z-=cameraSpeed;
+          camera.position.x-=cameraSpeed;
           break;
         case "ArrowLeft":
+          camera.position.z+=cameraSpeed;
           camera.position.x-=cameraSpeed;
           break;
         case "ArrowRight":
+          camera.position.z-=cameraSpeed;
           camera.position.x+=cameraSpeed;
           break;
         default:
