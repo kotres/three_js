@@ -47,7 +47,7 @@ function initScene(){
 	
 	
 	spotLight = new THREE.SpotLight( 0xffffff );
-	spotLight.position.set( -50, 50, 50 );
+	spotLight.position.set( -20, 20, 20 );
 	spotLight.castShadow = true;
 	scene.add( spotLight ); 
 }
