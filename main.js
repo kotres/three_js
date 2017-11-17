@@ -1,6 +1,6 @@
 
 
-var scene,camera,renderer,cube,plane,directionalLight,axisHelper,player;
+var scene,camera,renderer,cube,plane,directionalLight,axisHelper,player,playerRayCaster,downDirection,rayOrigin;
 
 function initScene(){
 	scene = new THREE.Scene();
@@ -62,7 +62,12 @@ function initScene(){
 	directionalLight.shadow.camera.lookAt( player.position );
 	scene.add( directionalLight ); 
 	/*var helper = new THREE.CameraHelper( directionalLight.shadow.camera );
-	scene.add( helper ); */
+  scene.add( helper ); */
+  downDirection = new THREE.Vector3( 0, -1, 0 );
+  rayOrigin = new THREE.Vector3();
+  rayOrigin.copy(player.position);
+  rayOrigin.y+=100;
+  playerRayCaster = new THREE.Raycaster( rayOrigin, downDirection);
 }
 
 initScene();
@@ -77,31 +82,38 @@ var animate = function () {
 };
 
 document.addEventListener('keydown', function(event) {
+    var previousPosition = new THREE.Vector3();
+    previousPosition.copy(player.position);
     var cameraSpeed=0.5;
     switch (event.key) {
         case "ArrowDown":
           player.position.z+=cameraSpeed;
           player.position.x+=cameraSpeed;
-          camera.position.set(player.position.x+20,player.position.y+20,player.position.z+20);
           break;
         case "ArrowUp":
           player.position.z-=cameraSpeed;
           player.position.x-=cameraSpeed;
-          camera.position.set(player.position.x+20,player.position.y+20,player.position.z+20);
           break;
         case "ArrowLeft":
           player.position.z+=cameraSpeed;
           player.position.x-=cameraSpeed;
-          camera.position.set(player.position.x+20,player.position.y+20,player.position.z+20);
           break;
         case "ArrowRight":
           player.position.z-=cameraSpeed;
           player.position.x+=cameraSpeed;
-          camera.position.set(player.position.x+20,player.position.y+20,player.position.z+20);
           break;
         default:
           return;
       }
+      
+      rayOrigin.copy(player.position);
+      rayOrigin.y+=100;
+      var intersects = playerRayCaster.intersectObject( plane );
+      //console.log(intersects.length);
+      if(intersects.length==0){
+        player.position.copy(previousPosition);
+      }
+      camera.position.set(player.position.x+20,player.position.y+20,player.position.z+20);
 });
 
 animate();
